@@ -1,13 +1,34 @@
-version: '3'
 services:
-  server:
+  frontend:
     build:
-      context: .  # Build the Docker image from the current directory
+      context: ./frontend
     ports:
-      - "5173:5173"  # Map port 5173 on the host to port 5173 on the container
-    volumes:
-      - .:/usr/src/app  # Mount the current directory to the container's /usr/src/app folder
-      - /usr/src/app/node_modules  # Ensure node_modules is not overwritten by the volume
+      - "5173:5173"
+    depends_on:
+      - backend
     environment:
-      - VITE_HMR_HOST=0.0.0.0  # Allow hot module reloading from any IP
-      - VITE_SERVER_URL=http://0.0.0.0:5173  # Set the server URL for the app
+      - VITE_HOST=0.0.0.0
+ 
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - database
+    environment:
+      - DATABASE_URL=mysql://user:password@database:3306/dbname
+ 
+  database:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: train
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+ 
+volumes:
+  mysql_data:
