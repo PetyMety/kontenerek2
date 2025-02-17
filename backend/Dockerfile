@@ -13,8 +13,8 @@ RUN npm install
 # Copy the rest of the application files
 COPY . .
 
-# Expose port 3306 for the app (change to the correct port if needed)
+# Expose port 3000 for the app (change to the correct port if needed)
 EXPOSE 3000
 
 # Use npx to run the Vite development server with --host flag
-CMD ["npx", "vite", "--host"]
+CMD ["npx", "vite", "serve", "--host"]
